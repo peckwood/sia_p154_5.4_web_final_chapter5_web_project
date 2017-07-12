@@ -35,11 +35,9 @@ public class SpitterControllerTest {
 	@Autowired
 	private WebApplicationContext context;
 
+	//example of using webAppContextSetup to test 
   @Test
   public void shouldShowRegistration() throws Exception {
-    SpitterRepository mockRepository = mock(SpitterRepository.class);
-    SpitterController controller = new SpitterController(mockRepository);
-   // MockMvc mockMvc = standaloneSetup(controller).build();
     MockMvc mockMvc = webAppContextSetup(context).build();
     mockMvc.perform(get("/spitter/register"))
            .andExpect(view().name("registerForm"));
@@ -70,9 +68,8 @@ public class SpitterControllerTest {
   @Test
   public void shouldFailValidationWithNoData() throws Exception {
     SpitterRepository mockRepository = mock(SpitterRepository.class);    
-    //SpitterController controller = new SpitterController(mockRepository);
-    //MockMvc mockMvc = standaloneSetup(controller).build();
-    MockMvc mockMvc = webAppContextSetup(context).build();
+    SpitterController controller = new SpitterController(mockRepository);
+    MockMvc mockMvc = standaloneSetup(controller).build();
     
     mockMvc.perform(post("/spitter/register"))
         .andExpect(status().isOk())
@@ -81,5 +78,4 @@ public class SpitterControllerTest {
         .andExpect(model().attributeHasFieldErrors(
             "spitter", "firstName", "lastName", "username", "password", "email"));
   }
-
 }
